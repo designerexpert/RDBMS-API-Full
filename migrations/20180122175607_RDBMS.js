@@ -8,7 +8,7 @@ exports.up = function (knex, Promise) {
         }),
         knex.schema.createTable('posts', (tbl) => {
             tbl.increments('id').primary();
-            tbl.integer('userId').references('id').inTable('users');
+            tbl.integer('userId').references('id').inTable('users').notNullable();
             tbl.text('text');
             tbl.timestamp('createdAt').defaultTo(knex.fn.now());
         }),

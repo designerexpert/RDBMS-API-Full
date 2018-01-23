@@ -13,7 +13,6 @@ server.get('/api', (req, res) => {
 
 server.post('/users', (req, res) => {
     const user = req.body;
-    console.log(user)
     knex.insert(user)
         .into('users')
         .then(result => {
@@ -22,6 +21,65 @@ server.post('/users', (req, res) => {
         .catch(err => {
             res.json({ errorMessage: err.message });
         });
+});
+
+server.get('/users/:id', (req, res) => {
+    const { id } = req.params;
+    // knex.select('*').from('users').where({ id })
+    knex('users').where({ id })
+        .then((foundUser) => {
+            res.json(foundUser);
+        })
+        .catch(err => {
+            res.json({ errorMessage: err.message });
+        })
+});
+
+server.get('/users', (req, res) => {
+    knex('users')
+        .then((foundUsers) => {
+            res.json(foundUsers);
+        })
+        .catch(err => {
+            res.json({ errorMessage: err.message });
+        })
+});
+
+server.get('/users/:id/posts', (req, res) => {
+    const { id } = req.params;
+    // knex.select('*').from('users').where({ id })
+    knex.select('*').from('posts').where('userId', id)
+        .then((foundPosts) => {
+            res.json(foundPosts);
+        })
+        .catch(err => {
+            res.json({ errorMessage: err.message });
+        })
+});
+
+server.put('/users/:id', (req, res) => {
+    const { id } = req.params;
+    const user = req.body;
+    knex('users').where({ id })
+        .update(user)
+        .then((foundUser) => {
+            res.json(foundUser);
+        })
+        .catch(err => {
+            res.json({ errorMessage: err.message });
+        })
+});
+
+server.delete('/users/:id', (req, res) => {
+    const { id } = req.params;
+    knex('users').where({ id })
+        .del()
+        .then((deletedId) => {
+            res.json(deletedId);
+        })
+        .catch(err => {
+            res.json({ errorMessage: err.message });
+        })
 });
 
 server.listen(port, () => {
